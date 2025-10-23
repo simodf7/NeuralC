@@ -1,44 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "neuron.h"
+#include "layer.h"
 #include "activation_function.h"
 
-int main(void){
+int main(void) {
     srand((unsigned int) time(NULL));
 
-    printf("Creazione Neurone\n"); 
+    int n_inputs = 4;
+    int n_neurons = 3;
 
-    int n = 4; 
+    printf("Creazione layer...\n");
 
-    struct neuron* n1 = create_neuron(reLU, n); 
-    float* w = initial_weights(n); 
-
-    printf("Pesi iniziali: "); 
-
-    for(int i=0; i<n; i++){
-        printf("%f ", w[i]); 
+    struct layer* l1 = create_layer(n_neurons, n_inputs, reLU);
+    if (!l1) {
+        printf("Errore nella creazione del layer.\n");
+        return 1;
     }
 
-    
-    printf("\nAssegno Pesi\n");
-    assign_weights(n1, w); 
+    initialize_weights(l1);
 
-    free(w); 
+    // Input di prova
+    float input[4] = {1.0f, -2.0f, 0.5f, 3.0f};
 
-    float* input = malloc(n*sizeof(float)); 
+    printf("Attivazione layer...\n");
+    activate_layer(l1, input);
 
-    input[0] = 2.1; 
-    input[1] = 3.4; 
-    input[2] = -1.2;
-    input[3] = 0.0; 
+    printf("\nOutput del layer:\n");
+    for (int i = 0; i < n_neurons; i++) {
+        printf("Neurone %d: %f\n", i, l1->output[i]);
+    }
 
+    destroy_layer(l1);
 
-    activate_neuron(n1, input); 
-    printf("Output del neurone: %f \n", n1->output);     
+    printf("\nLayer distrutto correttamente.\n");
 
-    free(input); 
-    free(n1->weights); 
-    free(n1);
-    return 0; 
+    return 0;
 }

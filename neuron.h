@@ -12,3 +12,4 @@ struct neuron* create_neuron(float (*func)(float), int n_inputs);
 void assign_weights(struct neuron* n, float* w); 
 void activate_neuron(struct neuron* n, float* input); 
 float* initial_weights(int n_inputs); 
+void destroy_neuron(struct neuron* n); 

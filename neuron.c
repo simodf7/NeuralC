@@ -4,16 +4,25 @@
 #include <time.h>
 #include "neuron.h"
 
+// aggiungere controlli if(!n) es. 
+// aggiungere if debug per togliere gli if
+
+
 struct neuron* create_neuron(float (*func)(float), int n_inputs){
     struct neuron* n = malloc(sizeof(struct neuron));
     if (!n){ 
-        printf("Creazione Neurone non andata a buon fine"); 
+        #ifdef DEBUG 
+            printf("Creazione Neurone non andata a buon fine"); 
+        #endif 
         return NULL; 
     }
 
     n->weights = malloc(n_inputs*sizeof(float)); 
     if(!n->weights){
-        printf("Creazione del vettore di pesi non andata a buon fine"); 
+        #ifdef DEBUG 
+            printf("Creazione del vettore di pesi non andata a buon fine"); 
+        #endif 
+        free(n); 
         return NULL; 
     }    
 
@@ -45,7 +54,9 @@ void activate_neuron(struct neuron* n, float* input){
 
     output += n->bias;
 
-    printf("Output Somma pesata: %f\n", output);
+    #ifdef DEBUG
+        printf("Output Somma pesata: %f\n", output);
+    #endif
 
     n->output = n->activation_function(output); 
 }
@@ -64,6 +75,11 @@ float* initial_weights(int n_inputs){
     return w; 
 }
 
+
+void destroy_neuron(struct neuron* n){
+    free(n->weights); 
+    free(n); 
+}
 
 
 
