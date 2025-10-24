@@ -1,7 +1,9 @@
-float reLU(float output){
-    if(output < 0){
-        return 0.0; 
-    }
-    else
-        return output; 
-}
+#ifndef ACTIVATION_FUNCTION_H
+#define ACTIVATION_FUNCTION_H
+
+#include <math.h>
+
+float reLU(float); 
+float sigmoid(float); 
+
+#endif 

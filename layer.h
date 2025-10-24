@@ -1,14 +1,21 @@
-struct layer{
-    int n_neurons; 
-    int n_inputs_per_neuron; 
-    struct neuron** neurons;  // array di puntatori a neuroni
-    float (*activation_function)(float); 
-    float* output;  // output di ogni neurone
+// trying to implement a strategy pattern
+#ifndef LAYER_H
+#define LAYER_H
+
+enum layer_type{
+    LAYER_DENSE, 
+    LAYER_SOFTMAX
 };
 
+struct layer{
+    enum layer_type type; 
+    float* output; 
+    void (*activate_layer)(void* self, float* input); 
+    void (*destroy_layer)(void* self); 
+    // per il momento solo questo
+}; 
+#endif 
 
 
-struct layer* create_layer(int n_neurons, int n_inputs_per_neuron, float (*func)(float)); 
-void initialize_weights(struct layer* l); 
-void activate_layer(struct layer* l, float* input); 
-void destroy_layer(struct layer* l); 
+
+

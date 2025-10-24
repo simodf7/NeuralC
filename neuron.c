@@ -8,7 +8,7 @@
 // aggiungere if debug per togliere gli if
 
 
-struct neuron* create_neuron(float (*func)(float), int n_inputs){
+struct neuron* create_neuron(int n_inputs){
     struct neuron* n = malloc(sizeof(struct neuron));
     if (!n){ 
         #ifdef DEBUG 
@@ -27,8 +27,7 @@ struct neuron* create_neuron(float (*func)(float), int n_inputs){
     }    
 
 
-    n->n_inputs = n_inputs; 
-    n->activation_function = func;
+    n->n_inputs = n_inputs;
     return n;
 }
 
@@ -54,11 +53,14 @@ void activate_neuron(struct neuron* n, float* input){
 
     output += n->bias;
 
+    n->output = output; 
+
+   
     #ifdef DEBUG
         printf("Output Somma pesata: %f\n", output);
     #endif
-
-    n->output = n->activation_function(output); 
+    
+    // manca funzione di attivazione 
 }
 
 

@@ -1,39 +1,48 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "layer.h"
+#include "network.h"
 #include "activation_function.h"
 
+
 int main(void) {
-    srand((unsigned int) time(NULL));
 
-    int n_inputs = 4;
-    int n_neurons = 3;
+    srand((unsigned int)time(NULL)); // inizializza generatore random
 
-    printf("Creazione layer...\n");
+    printf("=== Creazione rete neurale di test ===\n");
 
-    struct layer* l1 = create_layer(n_neurons, n_inputs, reLU);
-    if (!l1) {
-        printf("Errore nella creazione del layer.\n");
-        return 1;
+    // Crea una rete con 2 layer
+    struct network* net = create_network(3,2);
+
+    // Crea i layer
+    struct dense_layer* l1 = create_dense_layer(3, 4, reLU); // 3 neuroni, 4 input
+    struct dense_layer* l2 = create_dense_layer(2, 3, reLU); // 2 neuroni, input dai 3 output precedenti
+    struct softmax_layer* l3 = create_softmax_layer(2); 
+
+    // Aggiungi i layer alla rete
+    add_layer(net, (struct layer*) l1, 0);
+    add_layer(net, (struct layer*) l2, 1);
+    add_layer(net, (struct layer*) l3, 2); 
+
+    // Inizializza i pesi
+    initialize_network(net);
+
+    // Definisci un input (4 valori)
+    float input[4] = {1.0, -2.0, 0.5, 3.0};
+
+    // Esegui il forward pass
+    forward(net, input);
+
+    // Stampa l’output finale
+    printf("\n Output Rete: ");
+    for(int i=0; i<2; i++){
+        printf("%f ", net->output[i]);
     }
 
-    initialize_weights(l1);
+    // Libera memoria
+    destroy_network(net);
 
-    // Input di prova
-    float input[4] = {1.0f, -2.0f, 0.5f, 3.0f};
-
-    printf("Attivazione layer...\n");
-    activate_layer(l1, input);
-
-    printf("\nOutput del layer:\n");
-    for (int i = 0; i < n_neurons; i++) {
-        printf("Neurone %d: %f\n", i, l1->output[i]);
-    }
-
-    destroy_layer(l1);
-
-    printf("\nLayer distrutto correttamente.\n");
-
+    printf("\n=== Esecuzione completata ===\n");
     return 0;
+
 }
