@@ -14,6 +14,7 @@ struct network{
 struct network* create_network(int n_layers, int n_outputs);
 void add_layer(struct network* n, struct layer* l, int pos);
 void forward(struct network* n, float* input);
+void backward(struct network* n, float loss); 
 void initialize_network(struct network* n);
 void destroy_network(struct network* n);
 #endif

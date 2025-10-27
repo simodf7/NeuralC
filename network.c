@@ -62,6 +62,17 @@ void forward(struct network* n, float* input){
     
 }
 
+void backward(struct network* n, float loss){
+
+    
+
+
+}
+
+
+
+
+
 void initialize_network(struct network* n){
 
     for(int i=0; i< n->n_layers; i++){

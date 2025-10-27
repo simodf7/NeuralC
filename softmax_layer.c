@@ -20,6 +20,10 @@ void activate_softmax_layer(void* self, float* input){
         s->base.output[i] /= sum; 
     }
 
+    for(int i=0; i<s->n_inputs; i++){
+        s->base.local_gradient[i] = s->base.output[i] * (1-s->base.output[i]);  // derivata della softmax
+    }
+
 
     #ifdef DEBUG 
         printf("Softmax Layer attivato. Output disponibili.\n");
@@ -61,6 +65,18 @@ struct softmax_layer* create_softmax_layer(int n_inputs){
         free(s);
         return NULL; 
     }
+    
+
+    s->base.local_gradient = malloc(n_inputs*sizeof(float)); 
+    if(!s->base.local_gradient){
+        #ifdef DEBUG 
+            printf("allocazione local gradient nel layer non andata a buon fine\n"); 
+        #endif
+        free(s->base.output);
+        free(s);
+        return NULL; 
+    }
+
 
     #ifdef DEBUG
         printf("Layer softmax creato.\n"); 

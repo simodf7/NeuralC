@@ -3,7 +3,12 @@
 
 #include <math.h>
 
-float reLU(float); 
-float sigmoid(float); 
+struct activation_output{
+    float out; 
+    float der; // derivata 
+}; 
+
+struct activation_output reLU(float); 
+struct activation_output sigmoid(float); 
 
 #endif 

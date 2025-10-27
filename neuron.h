@@ -6,7 +6,6 @@ struct neuron{
     float* weights; 
     float bias; 
     float output; 
-    float local_gradient; // da capire 
     // tolta la funzione di attivazione, non ha senso perche è meglio inserirla nel layer
 };
 

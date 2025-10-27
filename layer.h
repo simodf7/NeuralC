@@ -9,7 +9,10 @@ enum layer_type{
 
 struct layer{
     enum layer_type type; 
+    int n_inputs; 
+    int n_outputs; 
     float* output; 
+    float* local_gradient; 
     void (*activate_layer)(void* self, float* input); 
     void (*destroy_layer)(void* self); 
     // per il momento solo questo

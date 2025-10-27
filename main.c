@@ -3,7 +3,7 @@
 #include <time.h>
 #include "network.h"
 #include "activation_function.h"
-
+#include "loss.h"
 
 int main(void) {
 
@@ -29,15 +29,20 @@ int main(void) {
 
     // Definisci un input (4 valori)
     float input[4] = {1.0, -2.0, 0.5, 3.0};
+    int correct_class = 1;
 
     // Esegui il forward pass
     forward(net, input);
 
     // Stampa l’output finale
-    printf("\n Output Rete: ");
+    printf("\nOutput Rete: ");
     for(int i=0; i<2; i++){
         printf("%f ", net->output[i]);
     }
+
+    float loss = cross_entropy_loss(net->output, correct_class); 
+
+    printf("\nLoss calcolata: %f.\n", loss);
 
     // Libera memoria
     destroy_network(net);
