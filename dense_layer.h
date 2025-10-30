@@ -6,7 +6,8 @@ struct dense_layer{
     struct layer base; 
     int n_neurons; 
     float* weights; // neuroni x input
-    float* delta_weights; // local_gradient for weights; // to calculate gradient to update weight
+    float* bias; 
+    float* delta_weights; // local_gradient for weights in forward; // to calculate gradient in backward to update weight
     float* delta_bias; // local gradient for bias;; // to calculate graident to update bias
     float* delta_input; // local_gradient for input -- to calculate gradient to flow upstream 
     struct activation_output (*activation_function)(float); 

@@ -3,7 +3,7 @@
 
 struct loss{
     float output; 
-    float local_gradient;
+    float* local_gradient;
 };
 
 #endif

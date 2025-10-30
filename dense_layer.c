@@ -9,9 +9,10 @@ void activate_dense_layer(void* self, float* input){
 
     struct dense_layer* l = (struct dense_layer*) self;
 
+    float out; 
 
     for(int i=0; i<l->n_neurons; i++){  // per ogni neurone
-        float out = 0.0; 
+        out = l->bias[i]; 
         for(int j=0; j<l->base.n_inputs; j++){  // per ogni input
             out += l->weights[i*l->base.n_inputs + j]*input[j]; 
         }
@@ -43,6 +44,7 @@ void destroy_dense_layer(void* self){
 
     struct dense_layer* l = (struct dense_layer*) self;
 
+    free(l->bias); 
     free(l->delta_input);
     free(l->delta_bias); 
     free(l->delta_weights); 
@@ -73,11 +75,22 @@ struct dense_layer* create_dense_layer(int n_neurons, int n_inputs_per_neuron, s
     l->n_neurons = n_neurons; 
     l->activation_function = func; 
 
+    l->bias = malloc(n_neurons*sizeof(float)); 
+    if(!l->bias){
+        #ifdef DEBUG 
+            printf("allocazione vettore dei bias non andata a buon fine\n"); 
+        #endif
+        free(l);
+        return NULL; 
+    }
+
+
     l->weights = malloc(n_neurons*n_inputs_per_neuron*sizeof(float)); 
     if(!l->weights){
         #ifdef DEBUG 
             printf("allocazione matrice dei pesi non andata a buon fine\n"); 
         #endif 
+        free(l->bias); 
         free(l);
         return NULL; 
     }
@@ -88,6 +101,7 @@ struct dense_layer* create_dense_layer(int n_neurons, int n_inputs_per_neuron, s
         #ifdef DEBUG 
             printf("allocazione output nel layer non andata a buon fine\n"); 
         #endif
+        free(l->bias); 
         free(l->weights);
         free(l);
         return NULL; 
@@ -98,6 +112,7 @@ struct dense_layer* create_dense_layer(int n_neurons, int n_inputs_per_neuron, s
         #ifdef DEBUG 
             printf("allocazione matrice dei local gradient ai pesi non andata a buon fine\n"); 
         #endif 
+        free(l->bias);
         free(l->weights);
         free(l->base.output);
         free(l);
@@ -109,6 +124,7 @@ struct dense_layer* create_dense_layer(int n_neurons, int n_inputs_per_neuron, s
         #ifdef DEBUG 
             printf("allocazione matrice dei local gradient ai bias non andata a buon fine\n"); 
         #endif 
+        free(l->bias); 
         free(l->delta_weights); 
         free(l->weights);
         free(l->base.output);
@@ -122,6 +138,7 @@ struct dense_layer* create_dense_layer(int n_neurons, int n_inputs_per_neuron, s
         #ifdef DEBUG 
             printf("allocazione matrice dei local gradient agli input non andata a buon fine\n"); 
         #endif 
+        free(l->bias); 
         free(l->delta_bias); 
         free(l->delta_weights); 
         free(l->weights);

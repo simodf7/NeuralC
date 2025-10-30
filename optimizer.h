@@ -5,7 +5,8 @@
 
 struct optimizer{   
     float learning_rate; // da aggiungere altro     
-    void (*update_weight(void* self, struct network*));
+    struct network* net; 
+    void (*update_weights)(struct optimizer* self);
 };
 
 

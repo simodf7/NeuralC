@@ -5,6 +5,7 @@
 struct softmax_layer{
     struct layer base; 
     int n_inputs; 
+    float* local_gradient; 
 }; 
 
 

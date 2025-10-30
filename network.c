@@ -62,11 +62,59 @@ void forward(struct network* n, float* input){
     
 }
 
-void backward(struct network* n, float loss){
+void backward(struct network* n, float* loss_grad){
 
+    // softmax_layer 
+    struct softmax_layer* s = (struct softmax_layer*) n->layers[n->n_layers-1];
+
+    float* up = malloc(s->n_inputs * sizeof(float));   // vettore dei downstream da softmax uno per neurone
+    if(!up){
+        #ifdef DEBUG
+        printf("Allocazione del vettore del grdiente upstream non andata a buon fine.\n"); 
+        #endif 
+        return NULL;
+    }
+
+
+    for(int i=0; i<s->n_inputs; i++){
+        up[i] = 0.0f; 
+        for(int j=0; j<s->n_inputs; j++){
+            up[i] += (loss_grad[j] * s->local_gradient[i*s->n_inputs + j]); 
+        }
+    }
     
 
+    struct dense_layer* d; 
+    
 
+    for(int i=1; i<n->n_layers-1; i++){  // devo escludere softmax
+        d = (struct dense_layer*) n->layers[n->n_layers-1-i];
+        float* up_next = malloc(d->base.n_inputs * sizeof(float)); 
+        if(!up_next){
+            #ifdef DEBUG
+            printf("Allocazione del vettore del grdiente upstream non andata a buon fine.\n"); 
+            #endif 
+            return NULL;
+        }
+
+        for(int k=0; k<d->base.n_inputs; k++){
+            up_next[k] = 0.0f; 
+        }
+
+        for(int j=0; j<d->n_neurons; j++){
+            d->delta_bias[j] = d->delta_bias[j] * up[j];  // dL/out_neuron_i * dout_neuron_i/d_bias_i
+            for(int k=0; k<d->base.n_inputs; k++){ 
+                d->delta_weights[j*d->base.n_inputs + k] = d->delta_weights[j*d->base.n_inputs + k] * up[j];  // gradiente locale per dL/dz1
+                up_next[k] += (d->delta_input[j*d->base.n_inputs + k] * up[j]);  // contributo di ogni neurone i all'input j
+            }
+        } 
+
+        free(up);
+        up = up_next; 
+    }
+
+
+    free(up); 
 }
 
 
